@@ -6,29 +6,80 @@ sourceCompatibility = 1.8
 
 version = '1.0'
 
+repositories {
+	mavenCentral()
+}
+
 jar {
     manifest {
         attributes 'Implementation-Title': 'CrowdMix Chat', 'Implementation-Version': version
     }
 }
 
-repositories {
-    mavenCentral()
+configurations {
+	unit.extendsFrom compile
+	acceptance.extendsFrom unit
 }
+
+sourceSets {
+	
+	unit {
+		java {
+			srcDir 'src/unit/java'
+		}
+	}
+	
+	acceptance {
+		java {
+			srcDir 'src/bdd/java'
+		}
+		
+		resources {
+			srcDir 'src/bdd/resources'
+		}
+	}
+}
+
+
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.+'
-    testCompile group: 'org.jbehave', name: 'jbehave-core', version: '4.0-beta-11'
+	unitCompile sourceSets.main.output
+	acceptanceCompile configurations.unit
+	
+	compile  group: 'org.springframework', name: 'spring-context', version: '4.1.6.RELEASE'
+    unitCompile group: 'junit', name: 'junit', version: '4.12'
+    unitCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+	acceptanceCompile group: 'org.springframework', name: 'spring-test', version: '4.1.6.RELEASE'
+    acceptanceCompile group: 'org.jbehave', name: 'jbehave-core', version: '4.0-beta-11'
 }
 
+eclipse {
+		classpath {
+			plusConfigurations = [configurations.acceptanceRuntime]
+		}
+}
 
-uploadArchives {
+uploadArchives { 
     repositories {
        flatDir {
            dirs 'repos'
        }
     }
 }
+
+task unitTest(type: Test) {
+	testClassesDir = sourceSets.unit.output.classesDir
+    classpath = sourceSets.unit.runtimeClasspath
+}
+
+task acceptanceTest(type: Test) {
+	testClassesDir = sourceSets.acceptance.output.classesDir
+    classpath = sourceSets.acceptance.runtimeClasspath
+}
+
+test.dependsOn unitTest,acceptanceTest
+
+acceptanceTest.shouldRunAfter unitTest
 
 // used to generate gradle wrapper scripts
 // don't run if gradlew exists
