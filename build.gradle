@@ -1,10 +1,17 @@
+defaultTasks 'release'
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+apply plugin: 'application'
+apply plugin: 'jacoco'
+apply plugin: 'project-report'
 
 sourceCompatibility = 1.8
 
 version = '1.0'
+
+mainClassName = "com.crdmix.domain.Main"
 
 repositories {
 	mavenCentral()
@@ -13,12 +20,13 @@ repositories {
 jar {
     manifest {
         attributes 'Implementation-Title': 'CrowdMix Chat', 'Implementation-Version': version
+        attributes 'Main-Class': mainClassName
     }
 }
 
 configurations {
-	unit.extendsFrom compile
-	acceptance.extendsFrom unit
+	unitCompile.extendsFrom compile
+	acceptanceCompile.extendsFrom unitCompile
 }
 
 sourceSets {
@@ -41,21 +49,23 @@ sourceSets {
 }
 
 
-
 dependencies {
-	unitCompile sourceSets.main.output
-	acceptanceCompile configurations.unit
-	
-	compile  group: 'org.springframework', name: 'spring-context', version: '4.1.6.RELEASE'
+	unitCompile files(sourceSets.main.output)
+	compile group: 'org.springframework', name: 'spring-context', version: '4.1.6.RELEASE'
+	compile group: 'joda-time', name: 'joda-time', version: '2.7'
     unitCompile group: 'junit', name: 'junit', version: '4.12'
-    unitCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+    unitCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
+    unitCompile group: 'org.assertj', name: 'assertj-core', version: '3.0.0'
+    acceptanceCompile group: 'org.assertj', name: 'assertj-core', version: '3.0.0'
 	acceptanceCompile group: 'org.springframework', name: 'spring-test', version: '4.1.6.RELEASE'
     acceptanceCompile group: 'org.jbehave', name: 'jbehave-core', version: '4.0-beta-11'
 }
 
+
+
 eclipse {
 		classpath {
-			plusConfigurations = [configurations.acceptanceRuntime]
+			plusConfigurations = [configurations.acceptanceRuntime,configurations.unitRuntime]
 		}
 }
 
@@ -77,10 +87,49 @@ task acceptanceTest(type: Test) {
     classpath = sourceSets.acceptance.runtimeClasspath
 }
 
+task generateCoverageAndFailIfDrops {
+    doLast {
+    file("$reporting.baseDir/coverage").mkdirs()
+    ant {
+        taskdef(name:'jacocoreport', classname: 'org.jacoco.ant.ReportTask', classpath: configurations.jacocoAnt.asPath )
+        jacocoreport {
+            executiondata {
+                fileset(dir: "build/jacoco") {
+                include name: 'unitTest.exec'
+                }
+            }
+            structure(name: project.name) {
+                classfiles {
+                    fileset(dir: sourceSets.main.output.classesDir) {
+                        exclude name: '**/*Test'
+                    }
+                }
+                sourcefiles(encoding: 'CP1252') {
+                    fileset dir: sourceSets.main.java.srcDirs[0]
+                }
+            }
+            check (failonviolation: true,violationsproperty: 'coverageerrors' ) {
+                rule {
+                    limit(counter:"LINE", value:"MISSEDCOUNT", maximum:"0")
+                }
+            }
+            xml destfile: "$reporting.baseDir/coverage/jacoco.xml"
+            html destdir: "$reporting.baseDir/coverage"
+        }
+     }
+    }
+    //TODO Fix this so it reports the violations of missing coverage correctly
+    //Had to use this because Jacoco plugin does not support the 'check' element
+}
+
+generateCoverageAndFailIfDrops.dependsOn unitTest
 test.dependsOn unitTest,acceptanceTest
 
 acceptanceTest.shouldRunAfter unitTest
 
+task release (description: "Full release") {
+    dependsOn clean,test,generateCoverageAndFailIfDrops,distZip
+}
 // used to generate gradle wrapper scripts
 // don't run if gradlew exists
 task wrapper(type: Wrapper) {

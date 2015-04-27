@@ -10,29 +10,28 @@ import org.springframework.context.ApplicationContextAware;
 
 public class SpringStepsFactory extends AbstractStepsFactory implements ApplicationContextAware {
 
-	private ApplicationContext applicationContext;
-	private final List<Class<?>> stepTypes;
+    private ApplicationContext applicationContext;
+    private final List<Class<?>> stepTypes;
 
-	public SpringStepsFactory(Configuration configuration,List<Class<?>> stepTypes) {
-		super(configuration);
-		this.stepTypes = stepTypes;
-	}
+    public SpringStepsFactory(Configuration configuration, List<Class<?>> stepTypes) {
+        super(configuration);
+        this.stepTypes = stepTypes;
+    }
 
-	@Override
-	public Object createInstanceOfType(Class<?> type) {
-		return applicationContext.getBean(type);
-	}
+    @Override
+    public Object createInstanceOfType(Class<?> type) {
+        return applicationContext.getBean(type);
+    }
 
-	@Override
-	protected List<Class<?>> stepsTypes() {
-		return this.stepTypes;
-	}
+    @Override
+    protected List<Class<?>> stepsTypes() {
+        return this.stepTypes;
+    }
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-				this.applicationContext = applicationContext;
-		
-	}
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+
+    }
 
 }
