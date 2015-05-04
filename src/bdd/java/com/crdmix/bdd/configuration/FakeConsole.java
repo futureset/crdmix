@@ -4,7 +4,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.crdmix.domain.console.AbstractConsole;
+import com.crdmix.console.AbstractConsole;
 
 public class FakeConsole extends AbstractConsole {
 

@@ -11,7 +11,7 @@ sourceCompatibility = 1.8
 
 version = '1.0'
 
-mainClassName = "com.crdmix.domain.Main"
+mainClassName = "com.crdmix.main.Main"
 
 repositories {
 	mavenCentral()
@@ -67,6 +67,14 @@ eclipse {
 		classpath {
 			plusConfigurations = [configurations.acceptanceRuntime,configurations.unitRuntime]
 		}
+}
+
+idea {
+    module {
+        testSourceDirs += file('src/unit/java')
+        testSourceDirs += file('src/bdd/java')
+        scopes.TEST.plus += [ configurations.acceptanceRuntime,configurations.unitRuntime ]
+    }
 }
 
 uploadArchives { 

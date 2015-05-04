@@ -5,7 +5,6 @@ import static org.mockito.Mockito.verify;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.crdmix.domain.eventsource.Command;
 import com.crdmix.unit.config.AbstractUnitBase;
 
 public class RunImmediatelyCommandInvokerTest extends AbstractUnitBase<RunImmediatelyCommandInvoker> {

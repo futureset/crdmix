@@ -1,5 +1,8 @@
 /bin/
 .*
+*.iml
+*.ipr
+*.iws
 /build/
 /jbehave/
 !/.gitignore

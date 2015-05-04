@@ -16,10 +16,11 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import com.crdmix.domain.console.SimpleConsole;
-import com.crdmix.domain.event.PostedMessageEvent;
-import com.crdmix.read.aggregate.UserFollowingAggregate;
-import com.crdmix.read.aggregate.UserTimelineAggregate;
+import com.crdmix.console.SimpleConsole;
+import com.crdmix.console.render.PostMessageRenderer;
+import com.crdmix.event.PostedMessageEvent;
+import com.crdmix.event.listener.aggregate.UserFollowingAggregate;
+import com.crdmix.event.listener.aggregate.UserTimelineAggregate;
 import com.crdmix.unit.config.AbstractUnitBase;
 
 public class ReadPostsToConsoleServiceTest extends AbstractUnitBase<ReadPostsToConsoleService> {
@@ -54,7 +55,7 @@ public class ReadPostsToConsoleServiceTest extends AbstractUnitBase<ReadPostsToC
     public void readAUsersTimeLineRenderingResultsToConsole() {
         events.add(userPostedMessageEvent);
         given(userTimeLineAggregate.getTimeLineForUser(user)).willReturn(events.stream());
-        given(postMessageRenderer.getMessage(false, userPostedMessageEvent)).willReturn(renderedUserPostedEvent);
+        given(postMessageRenderer.renderEvent(userPostedMessageEvent)).willReturn(renderedUserPostedEvent);
         underTest.readUserTimeLine(user);
         verify(simpleConsole).writeLineToStdOut(renderedUserPostedEvent);
     }
@@ -66,9 +67,9 @@ public class ReadPostsToConsoleServiceTest extends AbstractUnitBase<ReadPostsToC
         given(userFollowingAggregate.getUserFollowingUsers(user)).willReturn(new HashSet<>(Arrays.asList(otherUser)));
         given(userTimeLineAggregate.getTimeLineForUser(user)).willReturn(events.stream());
         given(userTimeLineAggregate.getTimeLineForUser(otherUser)).willReturn(otherUserevents.stream());
-        given(postMessageRenderer.getMessage(true, userPostedMessageEvent)).willReturn(renderedUserPostedEvent);
-        given(postMessageRenderer.getMessage(true, otherUserPostedMessageEvent)).willReturn(
-                renderedOtherUserPostedEvent);
+        given(postMessageRenderer.renderUserEvent(userPostedMessageEvent)).willReturn(renderedUserPostedEvent);
+        given(postMessageRenderer.renderUserEvent(otherUserPostedMessageEvent))
+                .willReturn(renderedOtherUserPostedEvent);
         underTest.readUserWall(user);
         InOrder inOrder = Mockito.inOrder(simpleConsole);
         inOrder.verify(simpleConsole).writeLineToStdOut(renderedUserPostedEvent);

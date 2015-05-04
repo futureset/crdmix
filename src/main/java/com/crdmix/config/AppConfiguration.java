@@ -3,22 +3,22 @@ package com.crdmix.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.crdmix.command.CommandFactory;
+import com.crdmix.command.CommandInvoker;
 import com.crdmix.command.CrdCommandFactory;
 import com.crdmix.command.RunImmediatelyCommandInvoker;
-import com.crdmix.domain.console.ConsoleListener;
-import com.crdmix.domain.console.ConsoleCommandDispatcher;
-import com.crdmix.domain.console.RealConsole;
-import com.crdmix.domain.console.SimpleConsole;
-import com.crdmix.domain.event.CrdEventFactory;
-import com.crdmix.domain.event.NotifyingEventStore;
-import com.crdmix.domain.eventsource.CommandFactory;
-import com.crdmix.domain.eventsource.CommandInvoker;
-import com.crdmix.domain.eventsource.EventFactory;
-import com.crdmix.read.PostMessageRenderer;
+import com.crdmix.console.ConsoleCommandDispatcher;
+import com.crdmix.console.ConsoleListener;
+import com.crdmix.console.RealConsole;
+import com.crdmix.console.SimpleConsole;
+import com.crdmix.console.render.PostMessageRenderer;
+import com.crdmix.event.CrdEventFactory;
+import com.crdmix.event.EventFactory;
+import com.crdmix.event.NotifyingEventStore;
+import com.crdmix.event.listener.aggregate.UserFollowingAggregate;
+import com.crdmix.event.listener.aggregate.UserTimelineAggregate;
 import com.crdmix.read.ReadPostsService;
 import com.crdmix.read.ReadPostsToConsoleService;
-import com.crdmix.read.aggregate.UserFollowingAggregate;
-import com.crdmix.read.aggregate.UserTimelineAggregate;
 
 @Configuration
 public class AppConfiguration {

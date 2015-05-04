@@ -1,7 +1,7 @@
 package com.crdmix.command;
 
-import com.crdmix.domain.eventsource.EventFactory;
-import com.crdmix.domain.eventsource.EventStore;
+import com.crdmix.event.EventFactory;
+import com.crdmix.event.EventStore;
 
 public class FollowUserCommand extends AbstractEventGeneratingCommand {
 

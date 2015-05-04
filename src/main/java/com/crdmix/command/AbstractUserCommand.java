@@ -1,6 +1,5 @@
 package com.crdmix.command;
 
-import com.crdmix.domain.eventsource.Command;
 
 public abstract class AbstractUserCommand implements Command {
 

@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.crdmix.domain.eventsource.EventFactory;
-import com.crdmix.domain.eventsource.EventStore;
+import com.crdmix.event.EventFactory;
+import com.crdmix.event.EventStore;
 import com.crdmix.unit.config.AbstractUnitBase;
 
 public class CrdCommandFactoryTest extends AbstractUnitBase<CrdCommandFactory> {

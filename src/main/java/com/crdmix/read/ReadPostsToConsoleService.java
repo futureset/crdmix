@@ -5,9 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import com.crdmix.domain.console.SimpleConsole;
-import com.crdmix.read.aggregate.UserFollowingAggregate;
-import com.crdmix.read.aggregate.UserTimelineAggregate;
+import com.crdmix.console.SimpleConsole;
+import com.crdmix.console.render.PostMessageRenderer;
+import com.crdmix.event.listener.aggregate.UserFollowingAggregate;
+import com.crdmix.event.listener.aggregate.UserTimelineAggregate;
 
 public class ReadPostsToConsoleService implements ReadPostsService {
     private SimpleConsole console;
@@ -27,7 +28,7 @@ public class ReadPostsToConsoleService implements ReadPostsService {
     @Override
     public void readUserTimeLine(String user) {
         userTimeLines.getTimeLineForUser(user).forEach(
-                postedMessage -> console.writeLineToStdOut(postMessageRenderer.getMessage(false, postedMessage)));
+                postedMessage -> console.writeLineToStdOut(postMessageRenderer.renderEvent(postedMessage)));
 
     }
 
@@ -38,8 +39,7 @@ public class ReadPostsToConsoleService implements ReadPostsService {
                 .map(u -> userTimeLines.getTimeLineForUser(u))
                 .reduce(userTimeLines.getTimeLineForUser(user), (a, b) -> Stream.concat(a, b))
                 .sorted(Comparator.comparing(e -> e.getEventTime()))
-                .forEach(
-                        postedMessage -> console.writeLineToStdOut(postMessageRenderer.getMessage(true, postedMessage)));
+                .forEach(postedMessage -> console.writeLineToStdOut(postMessageRenderer.renderUserEvent(postedMessage)));
 
     }
 }

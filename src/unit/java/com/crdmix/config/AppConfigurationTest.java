@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
-import com.crdmix.domain.console.ConsoleListener;
+import com.crdmix.console.ConsoleListener;
 import com.crdmix.unit.config.AbstractUnitBase;
 
 public class AppConfigurationTest extends AbstractUnitBase<AppConfiguration> {
