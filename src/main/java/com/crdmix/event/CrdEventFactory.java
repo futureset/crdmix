@@ -1,16 +1,23 @@
 package com.crdmix.event;
 
-import org.joda.time.DateTime;
+import java.time.Clock;
+import java.time.Instant;
 
 public class CrdEventFactory implements EventFactory {
+
+    private final Clock clock;
+
+    public CrdEventFactory(Clock clock) {
+        this.clock = clock;
+    }
 
     @Override
     public PostedMessageEvent userPostedMessage(String username, String message) {
         return new PostedMessageEvent(getCurrentDateTime(), username, message);
     }
 
-    private DateTime getCurrentDateTime() {
-        return new DateTime();
+    private Instant getCurrentDateTime() {
+        return Instant.now(clock);
     }
 
     @Override

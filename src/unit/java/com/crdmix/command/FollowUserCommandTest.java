@@ -1,20 +1,19 @@
 package com.crdmix.command;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-
-import org.junit.Test;
-import org.mockito.Mock;
-
 import com.crdmix.event.CrdEvent;
 import com.crdmix.event.EventFactory;
 import com.crdmix.event.EventStore;
 import com.crdmix.unit.config.AbstractUnitBase;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 public class FollowUserCommandTest extends AbstractUnitBase<FollowUserCommand> {
 
-    private String username = "user";
-    private String userToFollow = "followedUser";
+    private final String username = "user";
+    private final String userToFollow = "followedUser";
     @Mock
     private EventFactory eventFactory;
     @Mock

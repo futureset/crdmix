@@ -1,27 +1,23 @@
 package com.crdmix.read;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.InOrder;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-
 import com.crdmix.console.SimpleConsole;
 import com.crdmix.console.render.PostMessageRenderer;
 import com.crdmix.event.PostedMessageEvent;
 import com.crdmix.event.listener.aggregate.UserFollowingAggregate;
 import com.crdmix.event.listener.aggregate.UserTimelineAggregate;
 import com.crdmix.unit.config.AbstractUnitBase;
+import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ReadPostsToConsoleServiceTest extends AbstractUnitBase<ReadPostsToConsoleService> {
     @Mock
@@ -32,24 +28,16 @@ public class ReadPostsToConsoleServiceTest extends AbstractUnitBase<ReadPostsToC
     PostMessageRenderer postMessageRenderer;
     @Mock
     UserFollowingAggregate userFollowingAggregate;
-    private String user = "ben";
+    private final String user = "ben";
 
-    private List<PostedMessageEvent> events = new ArrayList<PostedMessageEvent>();
-    private List<PostedMessageEvent> otherUserevents = new ArrayList<PostedMessageEvent>();
+    private final List<PostedMessageEvent> events = new ArrayList<>();
+    private final List<PostedMessageEvent> otherUserevents = new ArrayList<>();
     @Mock
     private PostedMessageEvent userPostedMessageEvent;
     @Mock
     private PostedMessageEvent otherUserPostedMessageEvent;
-    private String renderedUserPostedEvent = "hello";
-    private String renderedOtherUserPostedEvent = "bye";
-    private String otherUser = "Alice";
-
-    @Before
-    public void setEventTimes() {
-        DateTime dateTime = new DateTime();
-        when(userPostedMessageEvent.getEventTime()).thenReturn(dateTime);
-        when(otherUserPostedMessageEvent.getEventTime()).thenReturn(new DateTime(dateTime.getMillis() + 1000));
-    }
+    private final String renderedUserPostedEvent = "hello";
+    private final String otherUser = "Alice";
 
     @Test
     public void readAUsersTimeLineRenderingResultsToConsole() {
@@ -62,12 +50,16 @@ public class ReadPostsToConsoleServiceTest extends AbstractUnitBase<ReadPostsToC
 
     @Test
     public void canReadAUsersTotheWallAggregatingFollowingUserPosts() {
+        Instant dateTime = Instant.now();
+        when(userPostedMessageEvent.getEventTime()).thenReturn(dateTime);
+        when(otherUserPostedMessageEvent.getEventTime()).thenReturn(dateTime.plus(1000, ChronoUnit.MILLIS));
         events.add(userPostedMessageEvent);
         otherUserevents.add(otherUserPostedMessageEvent);
-        given(userFollowingAggregate.getUserFollowingUsers(user)).willReturn(new HashSet<>(Arrays.asList(otherUser)));
+        given(userFollowingAggregate.getUserFollowingUsers(user)).willReturn(new HashSet<>(Collections.singletonList(otherUser)));
         given(userTimeLineAggregate.getTimeLineForUser(user)).willReturn(events.stream());
         given(userTimeLineAggregate.getTimeLineForUser(otherUser)).willReturn(otherUserevents.stream());
         given(postMessageRenderer.renderUserEvent(userPostedMessageEvent)).willReturn(renderedUserPostedEvent);
+        String renderedOtherUserPostedEvent = "bye";
         given(postMessageRenderer.renderUserEvent(otherUserPostedMessageEvent))
                 .willReturn(renderedOtherUserPostedEvent);
         underTest.readUserWall(user);

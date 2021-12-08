@@ -1,12 +1,12 @@
 package com.crdmix.event;
 
-import org.joda.time.DateTime;
+import java.time.Instant;
 
 public abstract class AbstractUserCrdEvent extends AbstractCrdEvent {
 
     private final String user;
 
-    public AbstractUserCrdEvent(DateTime eventTime, String user) {
+    public AbstractUserCrdEvent(Instant eventTime, String user) {
         super(eventTime);
         this.user = user;
     }

@@ -1,18 +1,18 @@
 package com.crdmix.event;
 
-import org.joda.time.DateTime;
+import java.time.Instant;
 
 public abstract class AbstractCrdEvent implements CrdEvent {
 
-    private final DateTime eventTime;
+    private final Instant eventTime;
 
-    public AbstractCrdEvent(DateTime eventTime) {
+    public AbstractCrdEvent(Instant eventTime) {
         super();
         this.eventTime = eventTime;
     }
 
     @Override
-    public DateTime getEventTime() {
+    public Instant getEventTime() {
         return eventTime;
     }
 

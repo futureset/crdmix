@@ -1,21 +1,17 @@
 package com.crdmix.console;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-
-import org.junit.After;
-import org.junit.Test;
-import org.mockito.Mock;
-
 import com.crdmix.command.CommandFactory;
 import com.crdmix.command.CommandInvoker;
 import com.crdmix.command.FollowUserCommand;
 import com.crdmix.command.PostMessageCommand;
-import com.crdmix.console.ConsoleCommandDispatcher;
 import com.crdmix.read.ReadPostsService;
 import com.crdmix.unit.config.AbstractUnitBase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 public class ConsoleCommandDispatcherTest extends AbstractUnitBase<ConsoleCommandDispatcher> {
     @Mock
@@ -26,17 +22,15 @@ public class ConsoleCommandDispatcherTest extends AbstractUnitBase<ConsoleComman
     ReadPostsService readPostsService;
 
     @DontInject
-    private String username = "Ben";
+    private final String username = "Ben";
     @DontInject
-    private String message = "My Test post!";
-    @DontInject
-    private String otherUser = "Alice";
+    private final String otherUser = "Alice";
     @Mock
     private PostMessageCommand postMessageCommand;
     @Mock
     private FollowUserCommand followUsercommand;
 
-    @After
+    @AfterEach
     public void noUnexpectedActions() {
         verifyNoMoreInteractions(readPostsService, commandInvoker);
     }
@@ -55,6 +49,7 @@ public class ConsoleCommandDispatcherTest extends AbstractUnitBase<ConsoleComman
 
     @Test
     public void postMessageIssuesCommand() {
+        String message = "My Test post!";
         given(commandFactory.createPostUserMessage(username, message)).willReturn(postMessageCommand);
         underTest.handleConsoleInput(username + " -> " + message);
         verify(commandInvoker).invokeCommand(postMessageCommand);
@@ -73,7 +68,7 @@ public class ConsoleCommandDispatcherTest extends AbstractUnitBase<ConsoleComman
         underTest.handleConsoleInput(username + " invalidCommand " + otherUser);
         underTest.handleConsoleInput(username + " invalidCommand");
         underTest.handleConsoleInput("");
-        verifyZeroInteractions(readPostsService, commandInvoker, commandFactory);
+        verifyNoInteractions(readPostsService, commandInvoker, commandFactory);
     }
 
 }

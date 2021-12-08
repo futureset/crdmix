@@ -1,21 +1,19 @@
 package com.crdmix.event.listener.aggregate;
 
+import com.crdmix.event.PostedMessageEvent;
+import com.crdmix.unit.config.AbstractUnitBase;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
-import org.junit.Test;
-import org.mockito.Mock;
-
-import com.crdmix.event.PostedMessageEvent;
-import com.crdmix.event.listener.aggregate.UserTimelineAggregate;
-import com.crdmix.unit.config.AbstractUnitBase;
-
 public class UserTimelineAggregateTest extends AbstractUnitBase<UserTimelineAggregate> {
 
-    private String user = "Ben";
+    private final String user = "Ben";
     @Mock
     private PostedMessageEvent postedMessageEvent;
-    private String message = "Hello everyone!";
+    private final String message = "Hello everyone!";
 
     @Test
     public void getUsertimeLineIsEmpty() {
@@ -24,7 +22,6 @@ public class UserTimelineAggregateTest extends AbstractUnitBase<UserTimelineAggr
 
     @Test
     public void afterAUserAsPostedThenTimeLineHasAnEvent() {
-        given(postedMessageEvent.getMessage()).willReturn(message);
         given(postedMessageEvent.getUser()).willReturn(user);
         underTest.handleMessagePosted(postedMessageEvent);
         assertThat(underTest.getTimeLineForUser(user).findFirst()).contains(postedMessageEvent);

@@ -1,8 +1,5 @@
 package com.crdmix.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.crdmix.command.CommandFactory;
 import com.crdmix.command.CommandInvoker;
 import com.crdmix.command.CrdCommandFactory;
@@ -19,14 +16,17 @@ import com.crdmix.event.listener.aggregate.UserFollowingAggregate;
 import com.crdmix.event.listener.aggregate.UserTimelineAggregate;
 import com.crdmix.read.ReadPostsService;
 import com.crdmix.read.ReadPostsToConsoleService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.time.Clock;
 
 @Configuration
 public class AppConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public SimpleConsole console() {
-        RealConsole realConsole = new RealConsole();
-        return realConsole;
+        return new RealConsole();
     }
 
     @Bean
@@ -45,7 +45,7 @@ public class AppConfiguration {
 
     @Bean
     public PostMessageRenderer postMessageRenderer() {
-        return new PostMessageRenderer();
+        return new PostMessageRenderer(clock());
     }
 
     @Bean
@@ -60,7 +60,12 @@ public class AppConfiguration {
 
     @Bean
     public EventFactory eventFactory() {
-        return new CrdEventFactory();
+        return new CrdEventFactory(clock());
+    }
+
+    @Bean
+    public Clock clock() {
+        return Clock.systemUTC();
     }
 
     @Bean

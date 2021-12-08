@@ -1,11 +1,10 @@
 package com.crdmix.command;
 
-import static org.mockito.Mockito.verify;
-
-import org.junit.Test;
+import com.crdmix.unit.config.AbstractUnitBase;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import com.crdmix.unit.config.AbstractUnitBase;
+import static org.mockito.Mockito.verify;
 
 public class RunImmediatelyCommandInvokerTest extends AbstractUnitBase<RunImmediatelyCommandInvoker> {
 

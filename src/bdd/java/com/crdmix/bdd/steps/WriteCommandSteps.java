@@ -1,25 +1,26 @@
 package com.crdmix.bdd.steps;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.crdmix.bdd.configuration.FakeConsole;
+import com.crdmix.console.render.ProgrammableClock;
+import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.When;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import org.jbehave.core.annotations.Given;
-import org.jbehave.core.annotations.Then;
-import org.jbehave.core.annotations.When;
-import org.joda.time.DateTimeUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.crdmix.bdd.configuration.FakeConsole;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Component
 public class WriteCommandSteps {
 
     @Autowired
     private FakeConsole captureConsole;
+    @Autowired
+    private ProgrammableClock programmableClock;
     private ArrayList<String> lastConsoleOutput;
 
     @When("$1 posts message \"$2\"")
@@ -30,14 +31,13 @@ public class WriteCommandSteps {
     }
 
     @When("$1 reads {his|her} timeline")
-    public void readTimeline(String username) throws UnsupportedEncodingException, InterruptedException {
+    public void readTimeline(String username) {
         captureConsole.incomingLineToStdIn(username);
         this.lastConsoleOutput = new ArrayList<>(captureConsole.getScreen());
     }
 
     @When("$1 reads the timeline of $")
-    public void readSomeOneElsesTimeLine(String user, String userTimeLineToRead) throws UnsupportedEncodingException,
-            InterruptedException {
+    public void readSomeOneElsesTimeLine(String user, String userTimeLineToRead) {
         readTimeline(userTimeLineToRead);
     }
 
@@ -48,9 +48,8 @@ public class WriteCommandSteps {
 
     @Given("$1 $2 have passed")
     public void givenTimeHavePassed(int time, String units) {
-        long currentOffSet = DateTimeUtils.currentTimeMillis() - System.currentTimeMillis();
         long desiredRelativeOffSet = TimeUnit.MILLISECONDS.convert(time, TimeUnit.valueOf(units.toUpperCase()));
-        DateTimeUtils.setCurrentMillisOffset(currentOffSet + desiredRelativeOffSet);
+        programmableClock.moreMillisecondsPast(desiredRelativeOffSet+100);
     }
 
     @Given("$1 follows $2")

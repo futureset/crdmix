@@ -1,12 +1,12 @@
 package com.crdmix.event;
 
-import org.joda.time.DateTime;
-
 import com.crdmix.event.listener.CrdEventListener;
+
+import java.time.Instant;
 
 public interface CrdEvent {
 
-    DateTime getEventTime();
+    Instant getEventTime();
 
     void accept(CrdEventListener listener);
 }

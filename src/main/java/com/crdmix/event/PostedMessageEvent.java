@@ -1,14 +1,14 @@
 package com.crdmix.event;
 
-import org.joda.time.DateTime;
-
 import com.crdmix.event.listener.CrdEventListener;
+
+import java.time.Instant;
 
 public class PostedMessageEvent extends AbstractUserCrdEvent {
 
     private final String message;
 
-    public PostedMessageEvent(DateTime eventTime, String user, String message) {
+    public PostedMessageEvent(Instant eventTime, String user, String message) {
         super(eventTime, user);
         this.message = message;
     }

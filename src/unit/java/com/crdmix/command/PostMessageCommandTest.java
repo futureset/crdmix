@@ -1,20 +1,19 @@
 package com.crdmix.command;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-
-import org.junit.Test;
-import org.mockito.Mock;
-
 import com.crdmix.event.CrdEvent;
 import com.crdmix.event.EventFactory;
 import com.crdmix.event.EventStore;
 import com.crdmix.unit.config.AbstractUnitBase;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 public class PostMessageCommandTest extends AbstractUnitBase<PostMessageCommand> {
 
-    private String username = "user";
-    private String message = "Hello message";
+    private final String username = "user";
+    private final String message = "Hello message";
     @Mock
     private EventFactory eventFactory;
     @Mock

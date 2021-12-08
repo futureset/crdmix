@@ -1,22 +1,21 @@
 package com.crdmix.event;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-
-import org.joda.time.DateTime;
-import org.junit.Test;
-import org.mockito.Mock;
-
-import com.crdmix.event.UserFollowedUserEvent;
 import com.crdmix.event.listener.CrdEventListener;
 import com.crdmix.unit.config.AbstractUnitBase;
 import com.crdmix.unit.config.UnitUtil;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+
+import java.time.Instant;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
 public class UserFollowedUserEventTest extends AbstractUnitBase<UserFollowedUserEvent> {
 
-    private DateTime dateTime = new DateTime(0L);
-    private String user = "ben";
-    private String followingUser = "alice";
+    private final Instant dateTime = Instant.now();
+    private final String user = "ben";
+    private final String followingUser = "alice";
     @Mock
     private CrdEventListener listener;
 

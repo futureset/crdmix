@@ -1,21 +1,18 @@
 package com.crdmix.event.listener.aggregate;
 
+import com.crdmix.event.UserFollowedUserEvent;
+import com.crdmix.unit.config.AbstractUnitBase;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
-import org.junit.Test;
-import org.mockito.Mock;
-
-import com.crdmix.event.UserFollowedUserEvent;
-import com.crdmix.event.listener.aggregate.UserFollowingAggregate;
-import com.crdmix.unit.config.AbstractUnitBase;
-
 public class UserFollowingAggregateTest extends AbstractUnitBase<UserFollowingAggregate> {
 
-    private String user = "Ben";
+    private final String user = "Ben";
     @Mock
     private UserFollowedUserEvent userFollowedUserEvent;
-    private String followedUser = "Alice";
 
     @Test
     public void getFollowingUsersIsInitiallyEmpty() {
@@ -24,6 +21,7 @@ public class UserFollowingAggregateTest extends AbstractUnitBase<UserFollowingAg
 
     @Test
     public void afterFollowingUserThen() {
+        String followedUser = "Alice";
         given(userFollowedUserEvent.getFollowingUser()).willReturn(followedUser);
         given(userFollowedUserEvent.getUser()).willReturn(user);
         underTest.handleUserFollowed(userFollowedUserEvent);

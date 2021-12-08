@@ -1,15 +1,12 @@
 package com.crdmix.event;
 
-import static org.mockito.Mockito.verify;
-
-import org.junit.Test;
+import com.crdmix.event.listener.CrdEventListener;
+import com.crdmix.unit.config.AbstractUnitBase;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import com.crdmix.event.CrdEvent;
-import com.crdmix.event.NotifyingEventStore;
-import com.crdmix.event.listener.CrdEventListener;
-import com.crdmix.unit.config.AbstractUnitBase;
+import static org.mockito.Mockito.verify;
 
 public class NotifyingEventStoreTest extends AbstractUnitBase<NotifyingEventStore> {
 

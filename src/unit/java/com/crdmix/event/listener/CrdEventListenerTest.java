@@ -1,14 +1,12 @@
 package com.crdmix.event.listener;
 
-import static org.mockito.Mockito.verifyZeroInteractions;
-
-import org.junit.Test;
-import org.mockito.Mock;
-
 import com.crdmix.event.PostedMessageEvent;
 import com.crdmix.event.UserFollowedUserEvent;
-import com.crdmix.event.listener.CrdEventListener;
 import com.crdmix.unit.config.AbstractUnitBase;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+
+import static org.mockito.Mockito.verifyNoInteractions;
 
 public class CrdEventListenerTest extends AbstractUnitBase<CrdEventListener> {
 
@@ -18,7 +16,7 @@ public class CrdEventListenerTest extends AbstractUnitBase<CrdEventListener> {
     private PostedMessageEvent postedMessageEvent;
 
     @Override
-    protected CrdEventListener createInstance() throws Exception {
+    protected CrdEventListener createInstance() {
         return new CrdEventListener() {
         };
     }
@@ -27,6 +25,6 @@ public class CrdEventListenerTest extends AbstractUnitBase<CrdEventListener> {
     public void hasDefaultMethodsThatDoNothing() {
         underTest.handleUserFollowed(userFollowedUserEvent);
         underTest.handleMessagePosted(postedMessageEvent);
-        verifyZeroInteractions(userFollowedUserEvent, postedMessageEvent);
+        verifyNoInteractions(userFollowedUserEvent, postedMessageEvent);
     }
 }

@@ -1,5 +1,11 @@
 package com.crdmix.unit.config;
 
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.util.StringUtils;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -13,14 +19,7 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.springframework.util.StringUtils;
-
+@ExtendWith(MockitoExtension.class)
 public abstract class AbstractUnitBase<T> {
 
     protected Class<T> clazz;
@@ -32,13 +31,14 @@ public abstract class AbstractUnitBase<T> {
 
     }
 
-    @Rule
-    public MockitoRule rule = MockitoJUnit.rule();
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         clazz = (Class) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         underTest = createInstance();
+        Assertions.assertThat(getClass().getName())
+                .as("Test class should be same name has class under test with 'Test' appended ")
+                .isEqualTo(clazz.getName() + "Test");
     }
 
     @SuppressWarnings("unchecked")
@@ -80,10 +80,4 @@ public abstract class AbstractUnitBase<T> {
         return (T) selectCtor.newInstance(args);
     }
 
-    @Test
-    public void checkUnitTestAndClassUnderTestFollowNamingConventions() {
-        Assertions.assertThat(getClass().getName())
-                .as("Test class should be same name has class under test with 'Test' appended ")
-                .isEqualTo(clazz.getName() + "Test");
-    }
 }

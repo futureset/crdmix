@@ -1,14 +1,14 @@
 package com.crdmix.event;
 
-import org.joda.time.DateTime;
-
 import com.crdmix.event.listener.CrdEventListener;
+
+import java.time.Instant;
 
 public class UserFollowedUserEvent extends AbstractUserCrdEvent {
 
     private final String followingUser;
 
-    public UserFollowedUserEvent(DateTime eventTime, String user, String followingUser) {
+    public UserFollowedUserEvent(Instant eventTime, String user, String followingUser) {
         super(eventTime, user);
         this.followingUser = followingUser;
     }

@@ -1,12 +1,18 @@
 package com.crdmix.console.render;
 
-import java.util.concurrent.TimeUnit;
-
-import org.joda.time.DateTimeUtils;
-
 import com.crdmix.event.PostedMessageEvent;
 
+import java.time.Clock;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
 public class PostMessageRenderer {
+
+    private final Clock clock;
+
+    public PostMessageRenderer(Clock clock) {
+        this.clock = clock;
+    }
 
     public String renderEvent(PostedMessageEvent event) {
         StringBuilder result = new StringBuilder(1000);
@@ -16,7 +22,7 @@ public class PostMessageRenderer {
 
     private StringBuilder render(PostedMessageEvent event, StringBuilder result) {
         result.append(event.getMessage()).append(" (");
-        long messageAge = DateTimeUtils.currentTimeMillis() - event.getEventTime().getMillis();
+        long messageAge = Duration.between(event.getEventTime(), clock.instant()).toMillis();
         if (messageAge < 1000) {
             result.append("Just now)");
         } else {
