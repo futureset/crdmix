@@ -7,7 +7,6 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.junit.After;
@@ -49,7 +48,6 @@ public class JBehaveConfig {
                 new StoryReporterBuilder()
                         .withCodeLocation(CodeLocations.codeLocationFromClass(JBehaveConfig.class))
                         .withRelativeDirectory("../../reports/jbehave")
-                        .withCrossReference(new CrossReference())
                         .withDefaultFormats().withFormats(CONSOLE, TXT, HTML, XML));
         return configuration;
     }

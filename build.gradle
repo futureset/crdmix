@@ -5,7 +5,7 @@ apply plugin: 'application'
 apply plugin: 'jacoco'
 apply plugin: 'project-report'
 
-sourceCompatibility = 11
+sourceCompatibility = JavaVersion.VERSION_20
 
 version = '1.0'
 
@@ -13,6 +13,10 @@ mainClassName = "com.crdmix.main.Main"
 
 repositories {
 	mavenCentral()
+}
+
+jacoco {
+	toolVersion = "0.8.9"
 }
 
 jar {
@@ -51,14 +55,18 @@ sourceSets {
 
 
 dependencies {
+	constraints {
+		acceptanceImplementation("org.apache.commons:commons-text:1.10.0") {
+			because ' maven:org.apache.commons:commons-text:1.9 CVE-2022-42889 9.8 Improper Control of Generation of Code (\'Code Injection\') vulnerability'
+		}
+	}
 	implementation group: 'org.springframework', name: 'spring-context', version: spring_version
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.8.2'
-	testImplementation("org.mockito:mockito-junit-jupiter:4.1.0")
-	testImplementation group: 'org.mockito', name: 'mockito-inline', version: '3.4.0'
+	testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
 	testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.0.0'
 	acceptanceImplementation group: 'org.springframework', name: 'spring-test', version: spring_version
 	acceptanceImplementation "org.junit.vintage:junit-vintage-engine:5.8.2"
-	acceptanceImplementation group: 'org.jbehave', name: 'jbehave-core', version: '4.0-beta-11'
+	acceptanceImplementation group: 'org.jbehave', name: 'jbehave-core', version: '5.1'
 }
 
 test {
@@ -66,19 +74,22 @@ test {
 	finalizedBy 'jacocoTestReport'
 }
 
-task acceptanceTest(type: Test) {
+tasks.register('acceptanceTest', Test) {
+	group = 'verification'
 	shouldRunAfter test
 	classpath=project.sourceSets.acceptance.runtimeClasspath
 	testClassesDirs=project.sourceSets.acceptance.output.classesDirs
 	finalizedBy 'jacocoAcceptanceTestReport'
 }
 
-task jacocoAcceptanceTestReport(type: JacocoReport, group: 'verification') {
+tasks.register('jacocoAcceptanceTestReport', JacocoReport) {
+	group = 'verification'
 	classDirectories.from(sourceSets.main.output.classesDirs)
 	executionData(project.tasks.acceptanceTest)
 }
 
-task jacocoAcceptanceTestCoverageVerification(type: JacocoCoverageVerification, group: 'verification') {
+tasks.register('jacocoAcceptanceTestCoverageVerification', JacocoCoverageVerification) {
+	group = 'verification'
 	classDirectories.from(sourceSets.main.output.classesDirs)
 	executionData(project.tasks.acceptanceTest)
 	mustRunAfter tasks.jacocoAcceptanceTestReport
@@ -107,5 +118,5 @@ check.dependsOn acceptanceTest,jacocoTestCoverageVerification,jacocoTestCoverage
 // used to generate gradle wrapper scripts
 // don't run if gradlew exists
 wrapper {
-	gradleVersion = '7.3'
+	gradleVersion = "$gradle_version"
 }
